@@ -4,7 +4,6 @@
  */
 public class SortingGUI extends javax.swing.JFrame {
     private static String outputName;
-
     /**
      * Creates new form SortingGUI
      */
@@ -57,7 +56,6 @@ public class SortingGUI extends javax.swing.JFrame {
         sortedComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sorted", "Random" }));
 
         algorithmLabel.setText("Sorting Algorithm");
-
         algorithmComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selection Sort", "Insertion Sort", "Shell Sort", "Bubble Sort", "Merge Sort", "Quick Sort", "Heap Sort" }));
         algorithmComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -178,54 +176,29 @@ public class SortingGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_sizeTextFieldActionPerformed
 
+    /*
+     * sort the generated data when user clicks the 'sort data' button
+     * using the sorting algorithm selected
+     */
     private void sortDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortDataButtonActionPerformed
+        // extract data from file to Integer[]
         Integer[] data = FileManager.getData(outputName);
         long startTime = 0;
         long endTime = 0;
-        switch((String) algorithmComboBox.getSelectedItem()) {
-            case("Selection Sort"):
-                startTime = System.currentTimeMillis();
-                Sort.selectionSort(data);
-                endTime = System.currentTimeMillis();
-                FileManager.createFile(outputName, data);
-                break;
-            case("Insertion Sort"):
-                startTime = System.currentTimeMillis();
-                Sort.insertionSort(data);
-                endTime = System.currentTimeMillis();
-                FileManager.createFile(outputName, data);
-                break;
-            case("Bubble Sort"):
-                startTime = System.currentTimeMillis();
-                Sort.bubbleSort(data);
-                endTime = System.currentTimeMillis();
-                FileManager.createFile(outputName, data);
-                break;
-            case("Shell Sort"):
-                startTime = System.currentTimeMillis();
-                Sort.shellSort(data);
-                endTime = System.currentTimeMillis();
-                FileManager.createFile(outputName, data);
-                break;
-            case("Merge Sort"):
-                startTime = System.currentTimeMillis();
-                Sort.mergeSort(data, 0, data.length-1);
-                endTime = System.currentTimeMillis();
-                FileManager.createFile(outputName, data);
-                break;
-            case("Quick Sort"):
-                startTime = System.currentTimeMillis();
-                Sort.quickSort(data, 0, data.length-1);
-                endTime = System.currentTimeMillis();
-                FileManager.createFile(outputName, data);
-                break;
-            case("Heap Sort"):
-                startTime = System.currentTimeMillis();
-                Sort.heapSort(data);
-                endTime = System.currentTimeMillis();
-                FileManager.createFile(outputName, data);
-        }
-        runtimeTextField.setText(endTime-startTime + " ms");
+
+        // create new SortContext which will implement a different sorting algorithm
+        // depending on the combobox element selected by the user
+        SortContext sorter = new SortContext((String)algorithmComboBox.getSelectedItem(), data);
+
+        // sort data and record the time elapsed
+        startTime = System.currentTimeMillis();
+        sorter.executeSort();
+        endTime = System.currentTimeMillis();
+
+        // replace the data with sorted data and output the runtime in the runtime textfield
+        FileManager.createFile(outputName, data);
+        runtimeTextField.setText(endTime - startTime + " ms");
+
     }//GEN-LAST:event_sortDataButtonActionPerformed
 
     private void algorithmComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algorithmComboBoxActionPerformed
